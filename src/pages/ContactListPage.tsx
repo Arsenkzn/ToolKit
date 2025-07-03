@@ -2,15 +2,10 @@ import React, { memo } from "react";
 import { Col, Row } from "react-bootstrap";
 import { ContactCard } from "src/components/ContactCard";
 import { FilterForm } from "src/components/FilterForm";
-import {
-  filterByCurrentGroupIdAction,
-  getContactNameAction,
-  setCurrentGroupIdAction,
-  unsetCurrentGroupIdAction,
-} from "src/store/actions/actions";
 import { useAppDispatch, useAppSelector } from "src/hooks/hooks";
 import { FilterFormValues } from "src/types/common";
 import { ContactDto } from "src/types/dto/ContactDto";
+import { filterByCurrentGroupId, getContactByName, setCurrentGroupId, unsetCurrentGroupId } from "src/store/reducers/contacts";
 
 export const ContactListPage = memo(() => {
   const { filtered, loading, error } = useAppSelector(
@@ -22,15 +17,15 @@ export const ContactListPage = memo(() => {
   const onSubmit = (fv: Partial<FilterFormValues>) => {
     if (fv.name) {
       const fvName = fv.name?.toLowerCase() || "";
-      dispatch(getContactNameAction(fvName));
-    } else dispatch(unsetCurrentGroupIdAction());
+      dispatch(getContactByName(fvName));
+    } else dispatch(unsetCurrentGroupId());
     if (fv.groupId && fv.groupId !== "Open this select menu") {
       const currentGroupContacts = groups.find(({ id }) => id === fv.groupId);
       if (currentGroupContacts) {
-        dispatch(setCurrentGroupIdAction(currentGroupContacts));
-        dispatch(filterByCurrentGroupIdAction());
+        dispatch(setCurrentGroupId(currentGroupContacts));
+        dispatch(filterByCurrentGroupId());
       } else {
-        dispatch(unsetCurrentGroupIdAction());
+        dispatch(unsetCurrentGroupId());
       }
     }
   };

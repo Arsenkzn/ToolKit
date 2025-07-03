@@ -10,12 +10,9 @@ import {
 } from "src/pages";
 import { Layout } from "src/components/Layout";
 import { useEffect } from "react";
-import {
-  fetchContacts,
-  fetchGroups,
-  setFavoritesContactsAction,
-} from "src/store/actions/actions";
 import { useAppDispatch } from "src/hooks/hooks";
+import { fetchContacts, fetchGroups } from "src/store/reducers/Thunks/thunks";
+import { setFavoritesContacts } from "src/store/reducers/contacts";
 
 export const App = () => {
   const dispatch = useAppDispatch();
@@ -23,7 +20,7 @@ export const App = () => {
   useEffect(() => {
     dispatch(fetchContacts());
     dispatch(fetchGroups());
-    dispatch(setFavoritesContactsAction());
+    dispatch(setFavoritesContacts());
   }, [dispatch]);
   return (
     <ThemeProvider

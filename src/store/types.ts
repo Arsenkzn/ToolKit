@@ -1,66 +1,54 @@
-import {
-  LOAD_GROUP_CONTACT,
-  GET_GROUP_CONTACT_ACTION,
-  SET_CURRENT_GROUP_ID_ACTION,
-  UNSET_CURRENT_GROUP_ID_ACTION,
-} from "./actions/actions";
+import { getgroups } from "process";
 import { ContactDto } from "src/types/dto/ContactDto";
 import { GroupContactsDto } from "src/types/dto/GroupContactsDto";
-import {
-  FILTER_BY_CURRENT_GROUP_ID_ACTION,
-  GET_CONTACT_NAME_ACTION,
-  LOAD_CONTACTS_ACTION_FAILURE,
-  LOAD_CONTACTS_ACTION_REQUEST,
-  LOAD_CONTACTS_ACTION_SUCCESS,
-  SET_FAVORITES_CONTACTS_ACTION,
-} from "./actions/actions";
-
+import { filterByCurrentGroupId, getContactByName, loadContactsFailure, loadContactsRequest, loadContactsSuccess, setCurrentGroupId, setFavoritesContacts, unsetCurrentGroupId } from "./reducers/contacts";
+import { loadGroupsSuccess } from "./reducers/group-reducer";
 export interface LoadContactsActionRequest {
-  type: typeof LOAD_CONTACTS_ACTION_REQUEST;
+  type: typeof loadContactsRequest;
 }
 export interface LoadContactsActionSuccess {
-  type: typeof LOAD_CONTACTS_ACTION_SUCCESS;
+  type: typeof loadContactsSuccess;
   payload: {
     contacts: ContactDto[];
   };
 }
 export interface LoadContactsActionFailure {
-  type: typeof LOAD_CONTACTS_ACTION_FAILURE;
+  type: typeof loadContactsFailure;
   payload: {
     error: string;
   };
 }
 export interface SetFavoritesContactsAction {
-  type: typeof SET_FAVORITES_CONTACTS_ACTION;
+  type: typeof setFavoritesContacts;
 }
 
 export interface SetCurrentGroupIdAction {
-  type: typeof SET_CURRENT_GROUP_ID_ACTION;
+  type: typeof setCurrentGroupId;
   payload: GroupContactsDto;
 }
 export interface UnSetCurrentGroupIdAction {
-  type: typeof UNSET_CURRENT_GROUP_ID_ACTION;
+  type: typeof unsetCurrentGroupId;
 }
 export interface FilterByCurrentGroupIdAction {
-  type: typeof FILTER_BY_CURRENT_GROUP_ID_ACTION;
+  type: typeof filterByCurrentGroupId;
 }
 
 export interface GetContactNameAction {
-  type: typeof GET_CONTACT_NAME_ACTION;
+  type: typeof getContactByName;
   payload: {
     name: ContactDto["name"];
   };
 }
 
 export interface LoadGroupContactsAction {
-  type: typeof LOAD_GROUP_CONTACT;
+  type: typeof loadGroupsSuccess;
   payload: {
     groups: GroupContactsDto[];
   };
 }
 
 export interface GetGroupContactAction {
-  type: typeof GET_GROUP_CONTACT_ACTION;
+  type: typeof loadGroupsSuccess;
   payload: {
     id: GroupContactsDto["id"];
   };

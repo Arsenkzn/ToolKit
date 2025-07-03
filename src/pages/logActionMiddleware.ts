@@ -1,7 +1,7 @@
 import { Middleware } from "redux";
-import { ROOTState } from "src/store/store";
+import { RootState } from "src/store/store";
 
-export const logAtionMiddleware: Middleware<{}, ROOTState> = (storeAPI) => {
+export const logAtionMiddleware: Middleware<{}, RootState> = (storeAPI) => {
   return function WrapDispatch(next) {
     return function handleAction(action: unknown) {
       return next(action);
