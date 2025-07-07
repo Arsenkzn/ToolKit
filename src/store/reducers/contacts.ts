@@ -1,88 +1,78 @@
-import { ContactsState } from "../types";
-import {
-  FILTER_BY_CURRENT_GROUP_ID_ACTION,
-  GET_CONTACT_NAME_ACTION,
-  LOAD_CONTACTS_ACTION_FAILURE,
-  LOAD_CONTACTS_ACTION_REQUEST,
-  LOAD_CONTACTS_ACTION_SUCCESS,
-  SET_CURRENT_GROUP_ID_ACTION,
-  SET_FAVORITES_CONTACTS_ACTION,
-  UNSET_CURRENT_GROUP_ID_ACTION,
-} from "../constans";
-import { ProjectActions } from "../actions/actions";
-import { DATA_CONTACT } from "src/__data__";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { ContactDto } from 'src/types/dto/ContactDto';
+import { GroupContactsDto } from 'src/types/dto/GroupContactsDto';
+import { DATA_CONTACT } from 'src/__data__';
+
+interface ContactsState {
+  all: ContactDto[];
+  filtered: ContactDto[];
+  favorites: string[];
+  loading: boolean;
+  error: string;
+  currentGroupId?: GroupContactsDto;
+}
 
 const initialState: ContactsState = {
   all: DATA_CONTACT,
-  filtered: [],
+  filtered: DATA_CONTACT,
   favorites: [],
   loading: false,
-  error: "",
+  error: '',
   currentGroupId: undefined,
 };
 
-export const contactsReducer = (
-  state = initialState,
-  action: ProjectActions
-) => {
-  switch (action.type) {
-    case LOAD_CONTACTS_ACTION_REQUEST:
-      return {
-        ...state,
-        loading: true,
-        error: "",
-      };
-    case LOAD_CONTACTS_ACTION_SUCCESS:
-      return {
-        ...state,
-        all: action.payload.contacts,
-        filtered: action.payload.contacts,
-        loading: false,
-        error: "",
-      };
-    case LOAD_CONTACTS_ACTION_FAILURE:
-      return {
-        ...state,
-        loading: false,
-        error: action.payload.error,
-      };
-    case SET_FAVORITES_CONTACTS_ACTION:
-      return {
-        ...state,
-        favorites: [
-          state.all[0].id,
-          state.all[1].id,
-          state.all[2].id,
-          state.all[3].id,
-        ],
-      };
-    case SET_CURRENT_GROUP_ID_ACTION:
-      return {
-        ...state,
-        currentGroupId: action.payload,
-      };
-    case UNSET_CURRENT_GROUP_ID_ACTION:
-      return {
-        ...state,
-        filtered: state.all,
-        currentGroupId: undefined,
-      };
-    case FILTER_BY_CURRENT_GROUP_ID_ACTION:
-      return {
-        ...state,
-        filtered: state.filtered.filter(({ id }) => {
-          return state.currentGroupId?.contactIds.includes(id);
-        }),
-      };
-    case GET_CONTACT_NAME_ACTION:
-      const searchName = action.payload.name.toLowerCase();
-      return {
-        ...state,
-        filtered: state.all.filter((contact) =>
-          contact.name.toLowerCase().includes(searchName)
-        ),
-      };
-    default:
-      return state;
-  }
-};
+const contactsSlice = createSlice({
+  name: 'contacts',
+  initialState,
+  reducers: {
+    loadContactsRequest(state) {
+      state.loading = true;
+      state.error = '';
+    },
+    loadContactsSuccess(state, action: PayloadAction<ContactDto[]>) {
+      state.all = action.payload;
+      state.filtered = action.payload;
+      state.loading = false;
+    },
+    loadContactsFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    setFavoritesContacts(state) {
+      state.favorites = state.all.slice(0, 4).map(contact => contact.id);
+    },
+    setCurrentGroupId(state, action: PayloadAction<GroupContactsDto>) {
+      state.currentGroupId = action.payload;
+    },
+    unsetCurrentGroupId(state) {
+      state.filtered = state.all;
+      state.currentGroupId = undefined;
+    },
+    filterByCurrentGroupId(state) {
+      if (state.currentGroupId) {
+        state.filtered = state.filtered.filter(({ id }) => 
+          state.currentGroupId?.contactIds.includes(id)
+        );
+      }
+    },
+    getContactByName(state, action: PayloadAction<string>) {
+      const searchName = action.payload.toLowerCase();
+      state.filtered = state.all.filter(contact => 
+        contact.name.toLowerCase().includes(searchName)
+      );
+    },
+  },
+});
+
+export const {
+  loadContactsRequest,
+  loadContactsSuccess,
+  loadContactsFailure,
+  setFavoritesContacts,
+  setCurrentGroupId,
+  unsetCurrentGroupId,
+  filterByCurrentGroupId,
+  getContactByName,
+} = contactsSlice.actions;
+
+export default contactsSlice.reducer;
