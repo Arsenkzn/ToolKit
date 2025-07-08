@@ -11,7 +11,6 @@ import {
 import { Layout } from "src/components/Layout";
 
 export const App = () => {
-
   return (
     <ThemeProvider
       breakpoints={["xxxl", "xxl", "xl", "lg", "md", "sm", "xs", "xxs"]}
