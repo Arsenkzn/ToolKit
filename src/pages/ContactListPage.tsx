@@ -20,7 +20,9 @@ export const ContactListPage = memo(() => {
   const { data: groups } = useGetGroupsQuery();
   const dispatch = useAppDispatch();
 
+
   const onSubmit = (fv: Partial<FilterFormValues>) => {
+    
     if (fv.name) {
       const fvName = fv.name?.toLowerCase() || "";
       dispatch(getContactByName(fvName));
