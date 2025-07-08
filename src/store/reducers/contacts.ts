@@ -1,33 +1,37 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ContactDto } from 'src/types/dto/ContactDto';
-import { GroupContactsDto } from 'src/types/dto/GroupContactsDto';
-import { DATA_CONTACT } from 'src/__data__';
-
-interface ContactsState {
-  all: ContactDto[];
-  filtered: ContactDto[];
-  favorites: string[];
-  loading: boolean;
-  error: string;
-  currentGroupId?: GroupContactsDto;
-}
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ContactDto } from "src/types/dto/ContactDto";
+import { GroupContactsDto } from "src/types/dto/GroupContactsDto";
+import { ContactsState } from "src/types/common";
 
 const initialState: ContactsState = {
-  all: DATA_CONTACT,
-  filtered: DATA_CONTACT,
+  all: [],
+  filtered: [],
   favorites: [],
   loading: false,
-  error: '',
+  error: "",
   currentGroupId: undefined,
 };
 
-const contactsSlice = createSlice({
-  name: 'contacts',
-  initialState,
+export const contactApiSlice = createApi({
+  reducerPath: "contactApi",
+  baseQuery: fetchBaseQuery({ baseUrl: "https://mocki.io/v1" }),
+  endpoints(builder) {
+    return {
+      getContacts: builder.query<ContactDto[], void>({
+        query: () => ({ url: "/721dbb16-7c6f-460a-a9f7-041b6127f8f0" }),
+      }),
+    };
+  },
+});
+
+export const contactsSlice = createSlice({
+  name: "contacts",
+  initialState: initialState,
   reducers: {
     loadContactsRequest(state) {
       state.loading = true;
-      state.error = '';
+      state.error = "";
     },
     loadContactsSuccess(state, action: PayloadAction<ContactDto[]>) {
       state.all = action.payload;
@@ -39,7 +43,7 @@ const contactsSlice = createSlice({
       state.error = action.payload;
     },
     setFavoritesContacts(state) {
-      state.favorites = state.all.slice(0, 4).map(contact => contact.id);
+      state.favorites = state.all.slice(0, 4).map((contact) => contact.id);
     },
     setCurrentGroupId(state, action: PayloadAction<GroupContactsDto>) {
       state.currentGroupId = action.payload;
@@ -50,14 +54,14 @@ const contactsSlice = createSlice({
     },
     filterByCurrentGroupId(state) {
       if (state.currentGroupId) {
-        state.filtered = state.filtered.filter(({ id }) => 
+        state.filtered = state.filtered.filter(({ id }) =>
           state.currentGroupId?.contactIds.includes(id)
         );
       }
     },
     getContactByName(state, action: PayloadAction<string>) {
       const searchName = action.payload.toLowerCase();
-      state.filtered = state.all.filter(contact => 
+      state.filtered = state.all.filter((contact) =>
         contact.name.toLowerCase().includes(searchName)
       );
     },
@@ -75,4 +79,4 @@ export const {
   getContactByName,
 } = contactsSlice.actions;
 
-export default contactsSlice.reducer;
+export const { useGetContactsQuery } = contactApiSlice;

@@ -5,13 +5,19 @@ import { FilterForm } from "src/components/FilterForm";
 import { useAppDispatch, useAppSelector } from "src/hooks/hooks";
 import { FilterFormValues } from "src/types/common";
 import { ContactDto } from "src/types/dto/ContactDto";
-import { filterByCurrentGroupId, getContactByName, setCurrentGroupId, unsetCurrentGroupId } from "src/store/reducers/contacts";
+import {
+  filterByCurrentGroupId,
+  getContactByName,
+  setCurrentGroupId,
+  unsetCurrentGroupId,
+  useGetContactsQuery,
+} from "src/store/reducers/contacts";
+import { useGetGroupsQuery } from "src/store/reducers/group-reducer";
 
 export const ContactListPage = memo(() => {
-  const { filtered, loading, error } = useAppSelector(
-    (state) => state.contacts
-  );
-  const { all: groups } = useAppSelector((state) => state.groups);
+  const { isLoading, error } = useGetContactsQuery();
+  const { filtered } = useAppSelector((state) => state.contacts);
+  const { data: groups } = useGetGroupsQuery();
   const dispatch = useAppDispatch();
 
   const onSubmit = (fv: Partial<FilterFormValues>) => {
@@ -20,7 +26,7 @@ export const ContactListPage = memo(() => {
       dispatch(getContactByName(fvName));
     } else dispatch(unsetCurrentGroupId());
     if (fv.groupId && fv.groupId !== "Open this select menu") {
-      const currentGroupContacts = groups.find(({ id }) => id === fv.groupId);
+      const currentGroupContacts = groups?.find(({ id }) => id === fv.groupId);
       if (currentGroupContacts) {
         dispatch(setCurrentGroupId(currentGroupContacts));
         dispatch(filterByCurrentGroupId());
@@ -32,11 +38,11 @@ export const ContactListPage = memo(() => {
 
   return (
     <>
-      {!loading ? (
+      {!isLoading ? (
         !error ? (
           <Row xxl={1}>
             <FilterForm
-              groupContactsList={groups}
+              groupContactsList={groups || []}
               initialValues={{}}
               onSubmit={onSubmit}
             />

@@ -5,6 +5,14 @@ import { ContactDto } from "./dto/ContactDto";
 
 export type State<TState> = [TState, Dispatch<SetStateAction<TState>>];
 
+export interface ContactsState {
+  all: ContactDto[];
+  filtered: ContactDto[];
+  favorites: string[];
+  loading: boolean;
+  error: string;
+  currentGroupId: GroupContactsDto | undefined;
+}
 export interface GroupContactsCardProps {
   groupContacts: GroupContactsDto;
   withLink?: boolean;

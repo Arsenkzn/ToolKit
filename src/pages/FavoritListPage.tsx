@@ -5,7 +5,6 @@ import { useAppSelector } from "src/hooks/hooks";
 
 export const FavoritListPage = memo(() => {
   const { all, favorites } = useAppSelector((state) => state.contacts);
-
   const favoritesContacts = all.filter(({ id }) => favorites.includes(id));
 
   return (

@@ -4,13 +4,14 @@ import { useParams } from "react-router-dom";
 import { GroupContactsCard } from "src/components/GroupContactsCard";
 import { Empty } from "src/components/Empty";
 import { ContactCard } from "src/components/ContactCard";
-import { useAppSelector } from "src/hooks/hooks";
+import { useGetContactsQuery } from "src/store/reducers/contacts";
+import { useGetGroupsQuery } from "src/store/reducers/group-reducer";
 
 export const GroupPage = memo(() => {
   const { groupId } = useParams<{ groupId: string }>();
-  const { all: contacts } = useAppSelector((state) => state.contacts);
-  const { all: groups } = useAppSelector((state) => state.groups);
-  const groupContacts = groups.find(({ id }) => id === groupId);
+  const { data: contacts } = useGetContactsQuery();
+  const { data: groups } = useGetGroupsQuery();
+  const groupContacts = groups?.find(({ id }) => id === groupId);
 
   return (
     <Row className="g-4">
@@ -25,7 +26,7 @@ export const GroupPage = memo(() => {
           </Col>
           <Col>
             <Row xxl={4} className="g-4">
-              {contacts.map((contact) => (
+              {contacts?.map((contact) => (
                 <Col key={contact.id}>
                   <ContactCard contact={contact} withLink />
                 </Col>

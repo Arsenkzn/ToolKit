@@ -9,19 +9,9 @@ import {
   ContactPage,
 } from "src/pages";
 import { Layout } from "src/components/Layout";
-import { useEffect } from "react";
-import { useAppDispatch } from "src/hooks/hooks";
-import { fetchContacts, fetchGroups } from "src/store/reducers/Thunks/thunks";
-import { setFavoritesContacts } from "src/store/reducers/contacts";
 
 export const App = () => {
-  const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(fetchContacts());
-    dispatch(fetchGroups());
-    dispatch(setFavoritesContacts());
-  }, [dispatch]);
   return (
     <ThemeProvider
       breakpoints={["xxxl", "xxl", "xl", "lg", "md", "sm", "xs", "xxs"]}

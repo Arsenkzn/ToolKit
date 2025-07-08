@@ -1,25 +1,16 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { GroupContactsDto } from 'src/types/dto/GroupContactsDto';
-import { DATA_GROUP_CONTACT } from 'src/__data__';
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-interface GroupsState {
-  all: GroupContactsDto[];
-}
-
-const initialState: GroupsState = {
-  all: DATA_GROUP_CONTACT,
-};
-
-const groupContactsSlice = createSlice({
-  name: 'groups',
-  initialState,
-  reducers: {
-    loadGroupsSuccess(state, action: PayloadAction<GroupContactsDto[]>) {
-      state.all = action.payload;
-    },
+export const groupApiSlice = createApi({
+  reducerPath: "groupsApi",
+  baseQuery: fetchBaseQuery({ baseUrl: "https://mocki.io/v1" }),
+  endpoints(builder) {
+    return {
+      getGroups: builder.query<GroupContactsDto[], void>({
+        query: () => ({ url: "/c02f865d-1ef8-467f-bdd5-8a1234e167d5" }),
+      }),
+    };
   },
 });
 
-export const { loadGroupsSuccess } = groupContactsSlice.actions;
-
-export default groupContactsSlice.reducer;
+export const { useGetGroupsQuery } = groupApiSlice;
