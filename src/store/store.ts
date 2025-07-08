@@ -18,6 +18,7 @@ const persistConfig = {
   storage,
 };
 
+
 const rootReducer = combineReducers({
   contacts: contactsSlice.reducer,
   groups: groupApiSlice.reducer,
